@@ -82,7 +82,7 @@
       background-color: var(--bg-panel);
     }
 
-    /* Compact Top Header (~38px) + Thin Countdown Progress Bar */
+    /* Compact Top Header (~36px) + Thin Countdown Progress Bar */
     .top-header {
       flex-shrink: 0;
       background-color: #060b16;
@@ -92,7 +92,7 @@
     }
 
     .top-header-row {
-      height: 38px;
+      height: 36px;
       padding: 0 10px;
       display: flex;
       align-items: center;
@@ -107,9 +107,9 @@
     }
 
     .hud-pill {
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 700;
-      padding: 3px 9px;
+      padding: 2px 9px;
       border-radius: 999px;
       background: rgba(30, 41, 59, 0.85);
       border: 1px solid rgba(148, 163, 184, 0.22);
@@ -126,11 +126,11 @@
     .hud-pill.timer-pill {
       direction: ltr;
       font-family: var(--font-mono);
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       font-weight: 800;
       color: #6ee7b7;
       border-color: rgba(16, 185, 129, 0.4);
-      min-width: 62px;
+      min-width: 60px;
       text-align: center;
       transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
     }
@@ -175,11 +175,11 @@
       background: #ef4444;
     }
 
-    /* Top Image Frame (28dvh, max 230px, min 140px) */
+    /* Top Image Frame (25dvh, max 210px, min 125px) */
     .ct-viewer-zone {
-      flex: 0 0 28dvh;
-      max-height: 230px;
-      min-height: 140px;
+      flex: 0 0 25dvh;
+      max-height: 210px;
+      min-height: 125px;
       background-color: var(--bg-viewer);
       background-image: radial-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px);
       background-size: 14px 14px;
@@ -187,7 +187,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 6px 10px;
+      padding: 5px 10px;
       border-bottom: 1px solid rgba(56, 189, 248, 0.18);
       cursor: zoom-in;
       overflow: hidden;
@@ -208,7 +208,7 @@
       width: 100%;
       max-width: 280px;
       height: 100%;
-      max-height: 195px;
+      max-height: 185px;
       border-radius: 10px;
       background: radial-gradient(circle at center, #0f172a 0%, #020617 90%);
       border: 1.5px dashed rgba(56, 189, 248, 0.35);
@@ -223,7 +223,7 @@
 
     .img-placeholder-station {
       font-family: var(--font-mono);
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       font-weight: 800;
       color: var(--accent-cyan);
       letter-spacing: 0.05em;
@@ -231,7 +231,7 @@
 
     .img-placeholder-file {
       font-family: var(--font-mono);
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 700;
       color: #cbd5e1;
       background: rgba(30, 41, 59, 0.8);
@@ -242,22 +242,22 @@
 
     .zoom-badge {
       position: absolute;
-      bottom: 6px;
+      bottom: 5px;
       right: 8px;
       background: rgba(15, 23, 42, 0.82);
       border: 1px solid rgba(148, 163, 184, 0.25);
       color: #cbd5e1;
-      font-size: 0.65rem;
+      font-size: 0.64rem;
       font-weight: 700;
       padding: 2px 7px;
       border-radius: 6px;
       pointer-events: none;
     }
 
-    /* Compact Sticky Diagnosis Banner (~32px) */
+    /* Compact Sticky Diagnosis Banner (~30px) */
     .sticky-diagnosis-bar {
       flex-shrink: 0;
-      height: 32px;
+      height: 30px;
       padding: 0 12px;
       display: flex;
       align-items: center;
@@ -277,7 +277,7 @@
     }
 
     .sticky-diag-label {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 800;
       white-space: nowrap;
       overflow: hidden;
@@ -298,11 +298,11 @@
     .mcq-workspace {
       flex: 1 1 auto;
       min-height: 0;
-      padding: 8px 10px 6px;
+      padding: 6px 10px 5px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 6px;
+      gap: 5px;
       overflow: hidden;
     }
 
@@ -315,17 +315,17 @@
     }
 
     .question-text {
-      font-size: clamp(12.5px, 3.4vw, 15px);
+      font-size: clamp(12.5px, 3.35vw, 14.5px);
       font-weight: 700;
       color: #ffffff;
-      line-height: 1.28;
+      line-height: 1.24;
       text-align: left;
       direction: ltr;
     }
 
     .timeout-tag {
       flex-shrink: 0;
-      font-size: 0.68rem;
+      font-size: 0.66rem;
       font-weight: 800;
       color: #fca5a5;
       background: rgba(220, 38, 38, 0.22);
@@ -341,17 +341,16 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
-      justify-content: space-evenly;
-      gap: 6px;
+      justify-content: space-between;
+      gap: 5px;
     }
 
     .option-btn {
       width: 100%;
       flex: 1 1 0;
-      min-height: 38px;
-      max-height: 62px;
-      padding: 5px 10px;
-      border-radius: 10px;
+      min-height: 36px;
+      padding: 4px 9px;
+      border-radius: 9px;
       background-color: var(--bg-card);
       border: 1.5px solid var(--border-subtle);
       color: #f1f5f9;
@@ -379,12 +378,12 @@
     }
 
     .opt-key {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border-radius: 6px;
       background: rgba(148, 163, 184, 0.14);
       color: var(--accent-cyan);
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       font-weight: 800;
       display: flex;
       align-items: center;
@@ -394,18 +393,18 @@
 
     .opt-text {
       flex: 1;
-      font-size: clamp(11.5px, 3.1vw, 13.5px);
+      font-size: clamp(11px, 2.95vw, 13px);
       font-weight: 600;
-      line-height: 1.24;
+      line-height: 1.2;
       color: inherit;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 4;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
     .opt-status-icon {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 900;
       flex-shrink: 0;
     }
@@ -437,14 +436,15 @@
       opacity: 0.58;
     }
 
-    /* Fixed Bottom Navigation Bar (48px + safe-area-inset-bottom) */
+    /* Fixed Bottom Navigation Bar (RTL: Next on Right with right arrow, Prev on Left with left arrow) */
     .bottom-nav-bar {
       flex-shrink: 0;
-      min-height: calc(48px + env(safe-area-inset-bottom));
-      padding: 6px 10px calc(6px + env(safe-area-inset-bottom));
+      min-height: calc(46px + env(safe-area-inset-bottom));
+      padding: 5px 10px calc(5px + env(safe-area-inset-bottom));
       background-color: #060b16;
       border-top: 1px solid var(--border-subtle);
       display: flex;
+      direction: rtl;
       align-items: center;
       gap: 8px;
       z-index: 15;
@@ -462,7 +462,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: 6px;
       transition: opacity 0.15s ease, transform 0.08s ease;
     }
 
@@ -763,7 +763,7 @@
          ACTIVE EXAM WORKSPACE (OPENS DIRECTLY INTO QUESTION 1 OF 90)
          ====================================================================== -->
     <section id="examScreen" class="exam-screen">
-      <!-- Compact Top Header (~38px) + 60s Countdown Progress Bar -->
+      <!-- Compact Top Header (~36px) + 60s Countdown Progress Bar -->
       <header class="top-header">
         <div class="top-header-row">
           <div class="hud-group">
@@ -777,13 +777,13 @@
         </div>
       </header>
 
-      <!-- Top Image Frame (28dvh, max 230px, min 140px) -->
+      <!-- Top Image Frame (25dvh, max 210px, min 125px) -->
       <div class="ct-viewer-zone" id="ctViewerZone" title="Tap to zoom">
         <div id="imageContainer" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;"></div>
         <span class="zoom-badge">🔍 Zoom</span>
       </div>
 
-      <!-- Compact Sticky Diagnosis Banner (~32px) -->
+      <!-- Compact Sticky Diagnosis Banner (~30px) -->
       <div class="sticky-diagnosis-bar state-prompt" id="stickyDiagnosisBar">
         <span class="sticky-diag-label" id="stickyDiagLabel">حدد التشخيص الصحيح من الخيارات أدناه</span>
       </div>
@@ -798,13 +798,13 @@
         <div class="options-grid" id="optionsGrid"></div>
       </main>
 
-      <!-- Fixed Bottom Navigation Bar -->
+      <!-- Fixed Bottom Navigation Bar (Next on Right with right arrow, Prev on Left with left arrow) -->
       <nav class="bottom-nav-bar">
-        <button type="button" class="nav-btn nav-btn-prev" id="prevBtn" disabled>
-          <span>→ السؤال السابق</span>
-        </button>
         <button type="button" class="nav-btn nav-btn-next" id="nextBtn">
-          <span>السؤال التالي ←</span>
+          <span>→ السؤال التالي</span>
+        </button>
+        <button type="button" class="nav-btn nav-btn-prev" id="prevBtn" disabled>
+          <span>السؤال السابق ←</span>
         </button>
       </nav>
     </section>
@@ -844,7 +844,7 @@
 
   <script>
     /* ========================================================================
-       1. COMPLETE VERBATIM 18-STATION DATASET (90 EXACT MCQs)
+       1. COMPLETE VERBATIM 18-STATION DATASET (90 EXACT UNEDITED MCQs)
        ======================================================================== */
     const STATIONS = [
       {
@@ -884,8 +884,8 @@
             correct: "Complications include mass effect and intraventricular extension.",
             distractors: [
               "May obscure the brainstem and cerebellum.",
-              "Small lesions or thin structures may be obscured or misrepresented.",
-              "Reduced spatial fidelity and image distortion."
+              "Effect: Small lesions or thin structures may be obscured or misrepresented.",
+              "Appearance: Streaks or distorted fine structures. Effect: Reduced spatial fidelity and image distortion."
             ]
           },
           {
@@ -919,21 +919,21 @@
             distractors: [
               "Biconvex hyperdense extra-axial collection.",
               "Hyperdense intraparenchymal hemorrhage with surrounding edema.",
-              "Irregular step-like margins in reconstructed structures."
+              "Appearance: Irregular step-like margins in reconstructed structures."
             ]
           },
           {
             q: "3. Which vessels are injured?",
-            correct: "Bridging vein injury.",
+            correct: "Usually due to bridging vein injury following trauma.",
             distractors: [
-              "Middle meningeal artery injury.",
-              "Hyperdense MCA.",
-              "Transverse atlantal ligament."
+              "Commonly associated with middle meningeal artery injury and temporal bone fracture.",
+              "Loss of grey-white differentiation, insular ribbon sign, sulcal effacement and hyperdense MCA.",
+              "Investigate bowel and mesenteric injuries."
             ]
           },
           {
             q: "4. What is the mechanism?",
-            correct: "Following trauma.",
+            correct: "Usually due to bridging vein injury following trauma.",
             distractors: [
               "Caused by axial loading.",
               "Usually caused by axial compression.",
@@ -971,24 +971,21 @@
             distractors: [
               "Crescent-shaped hyperdense extra-axial collection.",
               "Hyperdense intraparenchymal hemorrhage with surrounding edema.",
-              "Concentric circular rings centered around the rotational axis."
+              "Appearance: Concentric circular rings centered around the rotational axis."
             ]
           },
           {
             q: "3. Which artery is commonly injured?",
-            correct: "Commonly
-associated with middle
-meningeal artery injury and
-temporal bone fracture",
+            correct: "Commonly associated with middle meningeal artery injury and temporal bone fracture.",
             distractors: [
-              "Bridging vein injury.",
-              "Hyperdense MCA.",
-              "Bowel and mesenteric injuries."
+              "Usually due to bridging vein injury following trauma.",
+              "Loss of grey-white differentiation, insular ribbon sign, sulcal effacement and hyperdense MCA.",
+              "Investigate bowel and mesenteric injuries."
             ]
           },
           {
             q: "4. What associated fracture may occur?",
-            correct: "Temporal bone fracture.",
+            correct: "Commonly associated with middle meningeal artery injury and temporal bone fracture.",
             distractors: [
               "C1 burst fracture involving anterior and posterior arches.",
               "Odontoid fracture of C2.",
@@ -1022,10 +1019,10 @@ temporal bone fracture",
           },
           {
             q: "2. What is the hyperdense MCA sign?",
-            correct: "Hyperdense MCA.",
+            correct: "Loss of grey-white differentiation, insular ribbon sign, sulcal effacement and hyperdense MCA.",
             distractors: [
-              "Bridging vein injury.",
-              "Middle meningeal artery injury.",
+              "Usually due to bridging vein injury following trauma.",
+              "Commonly associated with middle meningeal artery injury and temporal bone fracture.",
               "Crescent-shaped hyperdense extra-axial collection."
             ]
           },
@@ -1035,7 +1032,7 @@ temporal bone fracture",
             distractors: [
               "Hyperdense intraparenchymal hemorrhage with surrounding edema.",
               "Dark streaks in the posterior fossa due to preferential absorption of low-energy photons.",
-              "Bright and dark streaks radiating from metal."
+              "Appearance: Bright and dark streaks radiating from metal."
             ]
           },
           {
@@ -1043,8 +1040,8 @@ temporal bone fracture",
             correct: "CTA ± CT perfusion.",
             distractors: [
               "MRI is more sensitive for marrow edema.",
-              "Coronal and sagittal MPR images.",
-              "CT detector system."
+              "Common location: Coronal and sagittal MPR images.",
+              "Source: CT detector system."
             ]
           },
           {
@@ -1067,45 +1064,45 @@ temporal bone fracture",
             q: "1. Identify the artifact.",
             correct: "Beam hardening artifact",
             distractors: [
-              "Cupping artifact",
-              "Metallic artifact",
-              "Photon starvation artifact"
+              "Cupping Artifact",
+              "Metallic Artifact",
+              "Photon Starvation Artifact"
             ]
           },
           {
             q: "2. Where is it commonly seen?",
-            correct: "In the posterior fossa.",
+            correct: "Dark streaks in the posterior fossa due to preferential absorption of low-energy photons.",
             distractors: [
-              "Shoulders and pelvis.",
-              "Coronal and sagittal MPR images.",
-              "Chest, abdomen and brain CT."
+              "Common locations: Shoulders and pelvis.",
+              "Common location: Coronal and sagittal MPR images.",
+              "Affected studies: Chest, abdomen and brain CT."
             ]
           },
           {
             q: "3. What causes it?",
-            correct: "Preferential absorption of low-energy photons.",
+            correct: "Dark streaks in the posterior fossa due to preferential absorption of low-energy photons.",
             distractors: [
-              "Detector element calibration failure or detector malfunction.",
-              "Patient movement or respiratory/cardiac motion.",
-              "Insufficient detected photons after marked X-ray attenuation."
+              "Cause: Detector element calibration failure or detector malfunction.",
+              "Cause: Patient movement or respiratory/cardiac motion.",
+              "Cause: Insufficient detected photons after marked X-ray attenuation."
             ]
           },
           {
             q: "4. How does it affect image interpretation?",
             correct: "May obscure the brainstem and cerebellum.",
             distractors: [
-              "Small lesions or thin structures may be obscured or misrepresented.",
-              "Reduced spatial fidelity and image distortion.",
-              "Blurring, ghosting and duplicated anatomical structures."
+              "Effect: Small lesions or thin structures may be obscured or misrepresented.",
+              "Appearance: Streaks or distorted fine structures. Effect: Reduced spatial fidelity and image distortion.",
+              "Appearance: Blurring, ghosting and duplicated anatomical structures."
             ]
           },
           {
             q: "5. How can it be reduced?",
             correct: "Reduced by correction algorithms and optimized acquisition parameters.",
             distractors: [
-              "Detector recalibration and technical servicing.",
-              "Patient instruction and immobilization.",
-              "Thinner slices, smaller voxel dimensions and appropriate reconstruction."
+              "Correction: Detector recalibration and technical servicing.",
+              "Reduction: Patient instruction, immobilization and",
+              "Reduction: Thinner slices, smaller voxel dimensions and appropriate reconstruction."
             ]
           }
         ]
@@ -1126,38 +1123,38 @@ temporal bone fracture",
           },
           {
             q: "2. What causes it?",
-            correct: "Patient movement or respiratory/cardiac motion.",
+            correct: "Cause: Patient movement or respiratory/cardiac motion.",
             distractors: [
-              "Detector element calibration failure or detector malfunction.",
-              "Insufficient spatial sampling of the acquired projection data.",
-              "Inadequate overlapping or discontinuous sampling during helical acquisition."
+              "Cause: Detector element calibration failure or detector malfunction.",
+              "Cause: Insufficient spatial sampling of the acquired projection data.",
+              "Cause: Inadequate overlapping or discontinuous sampling during helical acquisition."
             ]
           },
           {
             q: "3. How does it appear?",
-            correct: "Blurring, ghosting and duplicated anatomical structures.",
+            correct: "Appearance: Blurring, ghosting and duplicated anatomical structures.",
             distractors: [
-              "Concentric circular rings centered around the rotational axis.",
-              "Bright and dark streaks radiating from metal.",
-              "Irregular step-like margins in reconstructed structures."
+              "Appearance: Concentric circular rings centered around the rotational axis.",
+              "Appearance: Bright and dark streaks radiating from metal.",
+              "Appearance: Irregular step-like margins in reconstructed structures."
             ]
           },
           {
             q: "4. Which examinations are particularly affected?",
-            correct: "Chest, abdomen and brain CT.",
+            correct: "Affected studies: Chest, abdomen and brain CT.",
             distractors: [
-              "Shoulders and pelvis.",
-              "Coronal and sagittal MPR images.",
-              "In the posterior fossa."
+              "Common locations: Shoulders and pelvis.",
+              "Common location: Coronal and sagittal MPR images.",
+              "Dark streaks in the posterior fossa due to preferential absorption of low-energy photons."
             ]
           },
           {
             q: "5. How can it be prevented?",
-            correct: "Patient instruction and immobilization.",
+            correct: "Reduction: Patient instruction, immobilization and",
             distractors: [
-              "Detector recalibration and technical servicing.",
-              "Metal artifact reduction algorithms and appropriate kVp.",
-              "Beam-hardening correction and appropriate reconstruction algorithms."
+              "Correction: Detector recalibration and technical servicing.",
+              "Reduction: Metal artifact reduction algorithms, appropriate kVp and iterative",
+              "Reduction: Beam-hardening correction and appropriate reconstruction algorithms."
             ]
           }
         ]
@@ -1178,38 +1175,38 @@ temporal bone fracture",
           },
           {
             q: "2. What are its common sources?",
-            correct: "Dental fillings, surgical clips, prostheses and implants.",
+            correct: "Sources: Dental fillings, surgical clips, prostheses and implants.",
             distractors: [
-              "Shoulders and pelvis.",
-              "Chest, abdomen and brain CT.",
-              "CT detector system."
+              "Common locations: Shoulders and pelvis.",
+              "Affected studies: Chest, abdomen and brain CT.",
+              "Source: CT detector system."
             ]
           },
           {
             q: "3. Why does it occur?",
-            correct: "Beam hardening, photon starvation and related reconstruction effects.",
+            correct: "Cause: Beam hardening, photon starvation and related reconstruction effects.",
             distractors: [
-              "Detector element calibration failure or detector malfunction.",
-              "Patient movement or respiratory/cardiac motion.",
-              "Insufficient spatial sampling of the acquired projection data."
+              "Cause: Detector element calibration failure or detector malfunction.",
+              "Cause: Patient movement or respiratory/cardiac motion.",
+              "Cause: Insufficient spatial sampling of the acquired projection data."
             ]
           },
           {
             q: "4. How does it appear?",
-            correct: "Bright and dark streaks radiating from metal.",
+            correct: "Appearance: Bright and dark streaks radiating from metal.",
             distractors: [
-              "Concentric circular rings centered around the rotational axis.",
-              "Lower CT attenuation values centrally compared with the periphery.",
-              "Prominent streaks and increased image noise."
+              "Appearance: Concentric circular rings centered around the rotational axis.",
+              "Appearance: Lower CT attenuation values centrally compared with the periphery.",
+              "Appearance: Prominent streaks and increased image noise."
             ]
           },
           {
             q: "5. How can it be reduced?",
-            correct: "Metal artifact reduction algorithms and appropriate kVp.",
+            correct: "Reduction: Metal artifact reduction algorithms, appropriate kVp and iterative",
             distractors: [
-              "Detector recalibration and technical servicing.",
-              "Patient instruction and immobilization.",
-              "Thin-section acquisition, overlapping reconstructions and appropriate pitch."
+              "Correction: Detector recalibration and technical servicing.",
+              "Reduction: Patient instruction, immobilization and",
+              "Reduction: Thin-section acquisition, overlapping reconstructions and appropriate pitch."
             ]
           }
         ]
@@ -1230,38 +1227,38 @@ temporal bone fracture",
           },
           {
             q: "2. What causes it?",
-            correct: "Detector element calibration failure or detector malfunction.",
+            correct: "Cause: Detector element calibration failure or detector malfunction.",
             distractors: [
-              "Preferential absorption of low-energy photons.",
-              "Insufficient detected photons after marked X-ray attenuation.",
-              "Beam hardening within relatively homogeneous objects."
+              "Dark streaks in the posterior fossa due to preferential absorption of low-energy photons.",
+              "Cause: Insufficient detected photons after marked X-ray attenuation.",
+              "Cause: Beam hardening within relatively homogeneous objects."
             ]
           },
           {
             q: "3. Describe its appearance.",
-            correct: "Concentric circular rings centered around the rotational axis.",
+            correct: "Appearance: Concentric circular rings centered around the rotational axis.",
             distractors: [
-              "Bright and dark streaks radiating from metal.",
-              "Irregular step-like margins in reconstructed structures.",
-              "Blurring, ghosting and duplicated anatomical structures."
+              "Appearance: Bright and dark streaks radiating from metal.",
+              "Appearance: Irregular step-like margins in reconstructed structures.",
+              "Appearance: Blurring, ghosting and duplicated anatomical structures."
             ]
           },
           {
             q: "4. What component is usually responsible?",
-            correct: "CT detector system.",
+            correct: "Source: CT detector system.",
             distractors: [
-              "Dental fillings, surgical clips, prostheses and implants.",
-              "Shoulders and pelvis.",
-              "In the posterior fossa."
+              "Sources: Dental fillings, surgical clips, prostheses and implants.",
+              "Common locations: Shoulders and pelvis.",
+              "Dark streaks in the posterior fossa due to preferential absorption of low-energy photons."
             ]
           },
           {
             q: "5. How can it be corrected?",
-            correct: "Detector recalibration and technical servicing.",
+            correct: "Correction: Detector recalibration and technical servicing.",
             distractors: [
-              "Appropriate tube current, kVp optimization and iterative reconstruction.",
-              "Thinner slices, smaller voxel dimensions and appropriate reconstruction.",
-              "Adequate sampling frequency."
+              "Reduction: Appropriate tube current, kVp optimization and iterative reconstruction.",
+              "Reduction: Thinner slices, smaller voxel dimensions and appropriate reconstruction.",
+              "Reduction: Adequate sampling frequency and appropriate detector/"
             ]
           }
         ]
@@ -1282,38 +1279,38 @@ temporal bone fracture",
           },
           {
             q: "2. What causes it?",
-            correct: "Insufficient detected photons after marked X-ray attenuation.",
+            correct: "Cause: Insufficient detected photons after marked X-ray attenuation.",
             distractors: [
-              "Detector element calibration failure or detector malfunction.",
-              "Insufficient spatial sampling of the acquired projection data.",
-              "Patient movement or respiratory/cardiac motion."
+              "Cause: Detector element calibration failure or detector malfunction.",
+              "Cause: Insufficient spatial sampling of the acquired projection data.",
+              "Cause: Patient movement or respiratory/cardiac motion."
             ]
           },
           {
             q: "3. In which body regions is it common?",
-            correct: "Shoulders and pelvis.",
+            correct: "Common locations: Shoulders and pelvis.",
             distractors: [
-              "In the posterior fossa.",
-              "Coronal and sagittal MPR images.",
-              "Chest, abdomen and brain CT."
+              "Dark streaks in the posterior fossa due to preferential absorption of low-energy photons.",
+              "Common location: Coronal and sagittal MPR images.",
+              "Affected studies: Chest, abdomen and brain CT."
             ]
           },
           {
             q: "4. What is its appearance?",
-            correct: "Prominent streaks and increased image noise.",
+            correct: "Appearance: Prominent streaks and increased image noise.",
             distractors: [
-              "Concentric circular rings centered around the rotational axis.",
-              "Lower CT attenuation values centrally compared with the periphery.",
-              "Irregular step-like margins in reconstructed structures."
+              "Appearance: Concentric circular rings centered around the rotational axis.",
+              "Appearance: Lower CT attenuation values centrally compared with the periphery.",
+              "Appearance: Irregular step-like margins in reconstructed structures."
             ]
           },
           {
             q: "5. How can it be reduced?",
-            correct: "Appropriate tube current, kVp optimization and iterative reconstruction.",
+            correct: "Reduction: Appropriate tube current, kVp optimization and iterative reconstruction.",
             distractors: [
-              "Detector recalibration and technical servicing.",
-              "Patient instruction and immobilization.",
-              "Adequate sampling frequency."
+              "Correction: Detector recalibration and technical servicing.",
+              "Reduction: Patient instruction, immobilization and",
+              "Reduction: Adequate sampling frequency and appropriate detector/"
             ]
           }
         ]
@@ -1334,38 +1331,38 @@ temporal bone fracture",
           },
           {
             q: "2. Explain its mechanism.",
-            correct: "Different tissue densities within a single voxel are averaged into one CT attenuation value.",
+            correct: "Cause: Different tissue densities within a single voxel are averaged into one CT attenuation value.",
             distractors: [
-              "Preferential absorption of low-energy photons.",
-              "Inadequate overlapping or discontinuous sampling during helical acquisition.",
-              "Insufficient detected photons after marked X-ray attenuation."
+              "Dark streaks in the posterior fossa due to preferential absorption of low-energy photons.",
+              "Cause: Inadequate overlapping or discontinuous sampling during helical acquisition.",
+              "Cause: Insufficient detected photons after marked X-ray attenuation."
             ]
           },
           {
             q: "3. How does it affect small structures?",
-            correct: "Small lesions or thin structures may be obscured or misrepresented.",
+            correct: "Effect: Small lesions or thin structures may be obscured or misrepresented.",
             distractors: [
               "May obscure the brainstem and cerebellum.",
-              "Reduced spatial fidelity and image distortion.",
-              "Prominent streaks and increased image noise."
+              "Appearance: Streaks or distorted fine structures. Effect: Reduced spatial fidelity and image distortion.",
+              "Appearance: Prominent streaks and increased image noise."
             ]
           },
           {
             q: "4. Where is it commonly encountered?",
-            correct: "Different tissue densities within a single voxel.",
+            correct: "Cause: Different tissue densities within a single voxel are averaged into one CT attenuation value.",
             distractors: [
-              "Shoulders and pelvis.",
-              "In the posterior fossa.",
-              "Coronal and sagittal MPR images."
+              "Common locations: Shoulders and pelvis.",
+              "Dark streaks in the posterior fossa due to preferential absorption of low-energy photons.",
+              "Common location: Coronal and sagittal MPR images."
             ]
           },
           {
             q: "5. How can it be reduced?",
-            correct: "Thinner slices, smaller voxel dimensions and appropriate reconstruction.",
+            correct: "Reduction: Thinner slices, smaller voxel dimensions and appropriate reconstruction.",
             distractors: [
-              "Detector recalibration and technical servicing.",
-              "Patient instruction and immobilization.",
-              "Metal artifact reduction algorithms and appropriate kVp."
+              "Correction: Detector recalibration and technical servicing.",
+              "Reduction: Patient instruction, immobilization and",
+              "Reduction: Metal artifact reduction algorithms, appropriate kVp and iterative"
             ]
           }
         ]
@@ -1386,38 +1383,38 @@ temporal bone fracture",
           },
           {
             q: "2. What causes it?",
-            correct: "Inadequate overlapping or discontinuous sampling during helical acquisition.",
+            correct: "Cause: Inadequate overlapping or discontinuous sampling during helical acquisition.",
             distractors: [
-              "Insufficient spatial sampling of the acquired projection data.",
-              "Detector element calibration failure or detector malfunction.",
-              "Beam hardening within relatively homogeneous objects."
+              "Cause: Insufficient spatial sampling of the acquired projection data.",
+              "Cause: Detector element calibration failure or detector malfunction.",
+              "Cause: Beam hardening within relatively homogeneous objects."
             ]
           },
           {
             q: "3. In which reconstructions is it prominent?",
-            correct: "Coronal and sagittal MPR images.",
+            correct: "Common location: Coronal and sagittal MPR images.",
             distractors: [
-              "Shoulders and pelvis.",
-              "In the posterior fossa.",
-              "Chest, abdomen and brain CT."
+              "Common locations: Shoulders and pelvis.",
+              "Dark streaks in the posterior fossa due to preferential absorption of low-energy photons.",
+              "Affected studies: Chest, abdomen and brain CT."
             ]
           },
           {
             q: "4. How does it appear?",
-            correct: "Irregular step-like margins in reconstructed structures.",
+            correct: "Appearance: Irregular step-like margins in reconstructed structures.",
             distractors: [
-              "Concentric circular rings centered around the rotational axis.",
-              "Streaks or distorted fine structures.",
-              "Lower CT attenuation values centrally compared with the periphery."
+              "Appearance: Concentric circular rings centered around the rotational axis.",
+              "Appearance: Streaks or distorted fine structures. Effect: Reduced spatial fidelity and image distortion.",
+              "Appearance: Lower CT attenuation values centrally compared with the periphery."
             ]
           },
           {
             q: "5. How can it be reduced?",
-            correct: "Thin-section acquisition, overlapping reconstructions and appropriate pitch.",
+            correct: "Reduction: Thin-section acquisition, overlapping reconstructions and appropriate pitch.",
             distractors: [
-              "Appropriate tube current, kVp optimization and iterative reconstruction.",
-              "Detector recalibration and technical servicing.",
-              "Beam-hardening correction and appropriate reconstruction algorithms."
+              "Reduction: Appropriate tube current, kVp optimization and iterative reconstruction.",
+              "Correction: Detector recalibration and technical servicing.",
+              "Reduction: Beam-hardening correction and appropriate reconstruction algorithms."
             ]
           }
         ]
@@ -1438,38 +1435,38 @@ temporal bone fracture",
           },
           {
             q: "2. What causes it?",
-            correct: "Insufficient spatial sampling of the acquired projection data.",
+            correct: "Cause: Insufficient spatial sampling of the acquired projection data.",
             distractors: [
-              "Inadequate overlapping or discontinuous sampling during helical acquisition.",
-              "Detector element calibration failure or detector malfunction.",
-              "Preferential absorption of low-energy photons."
+              "Cause: Inadequate overlapping or discontinuous sampling during helical acquisition.",
+              "Cause: Detector element calibration failure or detector malfunction.",
+              "Dark streaks in the posterior fossa due to preferential absorption of low-energy photons."
             ]
           },
           {
             q: "3. What is the relationship with sampling frequency?",
-            correct: "Insufficient spatial sampling of the acquired projection data.",
+            correct: "Cause: Insufficient spatial sampling of the acquired projection data.",
             distractors: [
-              "Different tissue densities within a single voxel are averaged into one CT attenuation value.",
-              "Beam hardening within relatively homogeneous objects.",
-              "Patient movement or respiratory/cardiac motion."
+              "Cause: Different tissue densities within a single voxel are averaged into one CT attenuation value.",
+              "Cause: Beam hardening within relatively homogeneous objects.",
+              "Cause: Patient movement or respiratory/cardiac motion."
             ]
           },
           {
             q: "4. How does it affect image quality?",
-            correct: "Reduced spatial fidelity and image distortion.",
+            correct: "Appearance: Streaks or distorted fine structures. Effect: Reduced spatial fidelity and image distortion.",
             distractors: [
               "May obscure the brainstem and cerebellum.",
-              "Small lesions or thin structures may be obscured or misrepresented.",
-              "Prominent streaks and increased image noise."
+              "Effect: Small lesions or thin structures may be obscured or misrepresented.",
+              "Appearance: Prominent streaks and increased image noise."
             ]
           },
           {
             q: "5. How can it be reduced?",
-            correct: "Adequate sampling frequency.",
+            correct: "Reduction: Adequate sampling frequency and appropriate detector/",
             distractors: [
-              "Detector recalibration and technical servicing.",
-              "Patient instruction and immobilization.",
-              "Thinner slices, smaller voxel dimensions and appropriate reconstruction."
+              "Correction: Detector recalibration and technical servicing.",
+              "Reduction: Patient instruction, immobilization and",
+              "Reduction: Thinner slices, smaller voxel dimensions and appropriate reconstruction."
             ]
           }
         ]
@@ -1490,38 +1487,38 @@ temporal bone fracture",
           },
           {
             q: "2. What causes it?",
-            correct: "Beam hardening within relatively homogeneous objects.",
+            correct: "Cause: Beam hardening within relatively homogeneous objects.",
             distractors: [
-              "Detector element calibration failure or detector malfunction.",
-              "Insufficient spatial sampling of the acquired projection data.",
-              "Patient movement or respiratory/cardiac motion."
+              "Cause: Detector element calibration failure or detector malfunction.",
+              "Cause: Insufficient spatial sampling of the acquired projection data.",
+              "Cause: Patient movement or respiratory/cardiac motion."
             ]
           },
           {
             q: "3. Describe its appearance.",
-            correct: "Lower CT attenuation values centrally compared with the periphery.",
+            correct: "Appearance: Lower CT attenuation values centrally compared with the periphery.",
             distractors: [
-              "Concentric circular rings centered around the rotational axis.",
-              "Bright and dark streaks radiating from metal.",
-              "Irregular step-like margins in reconstructed structures."
+              "Appearance: Concentric circular rings centered around the rotational axis.",
+              "Appearance: Bright and dark streaks radiating from metal.",
+              "Appearance: Irregular step-like margins in reconstructed structures."
             ]
           },
           {
             q: "4. Which physical phenomenon is responsible?",
-            correct: "Preferential absorption of lower-energy photons.",
+            correct: "Mechanism: Preferential absorption of lower-energy photons.",
             distractors: [
-              "Insufficient detected photons after marked X-ray attenuation.",
-              "Inadequate overlapping or discontinuous sampling during helical acquisition.",
-              "Different tissue densities within a single voxel are averaged into one CT attenuation value."
+              "Cause: Insufficient detected photons after marked X-ray attenuation.",
+              "Cause: Inadequate overlapping or discontinuous sampling during helical acquisition.",
+              "Cause: Different tissue densities within a single voxel are averaged into one CT attenuation value."
             ]
           },
           {
             q: "5. How can it be corrected?",
-            correct: "Beam-hardening correction and appropriate reconstruction algorithms.",
+            correct: "Reduction: Beam-hardening correction and appropriate reconstruction algorithms.",
             distractors: [
-              "Detector recalibration and technical servicing.",
-              "Patient instruction and immobilization.",
-              "Adequate sampling frequency."
+              "Correction: Detector recalibration and technical servicing.",
+              "Reduction: Patient instruction, immobilization and",
+              "Reduction: Adequate sampling frequency and appropriate detector/"
             ]
           }
         ]
@@ -1555,16 +1552,16 @@ temporal bone fracture",
             distractors: [
               "Classically associated with seat-belt injury.",
               "Usually caused by axial compression.",
-              "Following trauma."
+              "Usually due to bridging vein injury following trauma."
             ]
           },
           {
             q: "4. Which ligament is important for stability?",
-            correct: "Transverse atlantal ligament.",
+            correct: "Assess transverse atlantal ligament.",
             distractors: [
-              "Bridging vein injury.",
-              "Middle meningeal artery injury.",
-              "Bowel and mesenteric injuries."
+              "Usually due to bridging vein injury following trauma.",
+              "Commonly associated with middle meningeal artery injury and temporal bone fracture.",
+              "Investigate bowel and mesenteric injuries."
             ]
           },
           {
@@ -1612,11 +1609,11 @@ temporal bone fracture",
           },
           {
             q: "4. What are the common causes?",
-            correct: "Trauma.",
+            correct: "Odontoid fracture of C2.",
             distractors: [
-              "Osteoporosis, trauma and malignancy.",
-              "Seat-belt injury.",
-              "Axial compression."
+              "Causes include osteoporosis, trauma and malignancy.",
+              "Classically associated with seat-belt injury.",
+              "Usually caused by axial compression."
             ]
           },
           {
@@ -1636,7 +1633,7 @@ temporal bone fracture",
         diagnosis: "Thoracolumbar burst fracture",
         questions: [
           {
-            q: "1. Identify the pathology.",
+            q: "1. Identify the fracture.",
             correct: "Thoracolumbar burst fracture",
             distractors: [
               "Vertebral compression fracture",
@@ -1659,15 +1656,15 @@ temporal bone fracture",
             distractors: [
               "Classically associated with seat-belt injury.",
               "Caused by axial loading.",
-              "Following trauma."
+              "Usually due to bridging vein injury following trauma."
             ]
           },
           {
             q: "4. What is the significance of retropulsion?",
-            correct: "Possible retropulsion into the spinal canal.",
+            correct: "Vertebral body comminution, posterior wall disruption and possible retropulsion into the spinal canal.",
             distractors: [
-              "Bowel and mesenteric injuries.",
-              "Transverse atlantal ligament.",
+              "Investigate bowel and mesenteric injuries.",
+              "Assess transverse atlantal ligament.",
               "Complications include mass effect and intraventricular extension."
             ]
           },
@@ -1711,16 +1708,16 @@ temporal bone fracture",
             distractors: [
               "Usually caused by axial compression.",
               "Caused by axial loading.",
-              "Following trauma."
+              "Usually due to bridging vein injury following trauma."
             ]
           },
           {
             q: "4. Which abdominal injuries are associated?",
-            correct: "Bowel and mesenteric injuries.",
+            correct: "Investigate bowel and mesenteric injuries.",
             distractors: [
-              "Transverse atlantal ligament.",
-              "Bridging vein injury.",
-              "Middle meningeal artery injury."
+              "Assess transverse atlantal ligament.",
+              "Usually due to bridging vein injury following trauma.",
+              "Commonly associated with middle meningeal artery injury and temporal bone fracture."
             ]
           },
           {
@@ -1771,8 +1768,8 @@ temporal bone fracture",
             correct: "MRI is more sensitive for marrow edema.",
             distractors: [
               "CTA ± CT perfusion.",
-              "Coronal and sagittal MPR images.",
-              "CT detector system."
+              "Common location: Coronal and sagittal MPR images.",
+              "Source: CT detector system."
             ]
           },
           {
@@ -2075,10 +2072,10 @@ temporal bone fracture",
       prevBtn.disabled = idx === 0;
       if (idx === TOTAL_QUESTIONS - 1) {
         nextBtn.classList.add("is-finish");
-        nextBtn.innerHTML = `<span>عرض النتيجة النهائية ✓</span>`;
+        nextBtn.innerHTML = `<span>✓ عرض النتيجة النهائية</span>`;
       } else {
         nextBtn.classList.remove("is-finish");
-        nextBtn.innerHTML = `<span>السؤال التالي ←</span>`;
+        nextBtn.innerHTML = `<span>→ السؤال التالي</span>`;
       }
 
       // Start or display 60-second timer
@@ -2086,7 +2083,7 @@ temporal bone fracture",
     }
 
     /* ========================================================================
-       8. ANSWER CLICK HANDLER (IMMEDIATE GREEN/RED + 3s DELAY ON WRONG)
+       8. ANSWER CLICK HANDLER (IMMEDIATE GREEN/RED + 500ms DELAY ON WRONG)
        ======================================================================== */
     function handleOptionClick(selectedOptIdx) {
       const idx = state.currentGlobalIndex;
@@ -2132,7 +2129,7 @@ temporal bone fracture",
           }
         });
 
-        // Reveal correct answer in bright green after 3000ms
+        // Reveal correct answer in bright green after 500ms (0.5 seconds)
         state.revealTimeout = setTimeout(() => {
           rec.revealed = true;
           state.revealTimeout = null;
