@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>CT Practical Examination - Brain &amp; Spine</title>
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS & ZERO-SCROLL MOBILE VIEWPORT ARCHITECTURE
+       ========================================================================== */
+    :root {
+      --bg-app: #020617;
+      --bg-panel: #0b1120;
+      --bg-card: #131c31;
+      --bg-card-hover: #1b2845;
+      --bg-viewer: #020617;
+      --border-subtle: rgba(148, 163, 184, 0.18);
+      --border-strong: rgba(56, 189, 248, 0.4);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --correct-bg: #16a34a;
+      --correct-border: #4ade80;
+      --wrong-bg: #dc2626;
+      --wrong-border: #f87171;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      overflow: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 600px;
+      height: 100dvh;
+      max-height: 100dvh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-panel);
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 601px) {
+      .app-shell {
+        border-left: 1px solid var(--border-subtle);
+        border-right: 1px solid var(--border-subtle);
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.85);
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ==========================================================================
+       2. ACTIVE EXAM SCREEN (STRICT 100dvh ZERO-SCROLL FLEX LAYOUT)
+       ========================================================================== */
+    .exam-screen {
+      height: 100dvh;
+      max-height: 100dvh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-panel);
+    }
+
+    /* Compact Top Header (~38px) + Thin Countdown Progress Bar */
+    .top-header {
+      flex-shrink: 0;
+      background-color: #060b16;
+      border-bottom: 1px solid var(--border-subtle);
+      position: relative;
+      z-index: 10;
+    }
+
+    .top-header-row {
+      height: 38px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .hud-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hud-pill {
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      color: #e2e8f0;
+      white-space: nowrap;
+      direction: rtl;
+    }
+
+    .hud-pill.station-pill {
+      color: var(--accent-cyan);
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+
+    .hud-pill.timer-pill {
+      direction: ltr;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: #6ee7b7;
+      border-color: rgba(16, 185, 129, 0.4);
+      min-width: 62px;
+      text-align: center;
+      transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .hud-pill.timer-pill.timer-warn {
+      color: #fcd34d;
+      border-color: rgba(245, 158, 11, 0.55);
+      background: rgba(245, 158, 11, 0.14);
+    }
+
+    .hud-pill.timer-pill.timer-danger {
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.75);
+      background: rgba(220, 38, 38, 0.22);
+      animation: pulseTimer 0.8s infinite alternate;
+    }
+
+    @keyframes pulseTimer {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+
+    .timer-track {
+      width: 100%;
+      height: 3px;
+      background: rgba(30, 41, 59, 0.8);
+      overflow: hidden;
+    }
+
+    .timer-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #10b981, #38bdf8);
+      transition: width 0.25s linear, background 0.25s ease;
+    }
+
+    .timer-fill.timer-warn {
+      background: #f59e0b;
+    }
+
+    .timer-fill.timer-danger {
+      background: #ef4444;
+    }
+
+    /* Top Image Frame (28dvh, max 230px, min 140px) */
+    .ct-viewer-zone {
+      flex: 0 0 28dvh;
+      max-height: 230px;
+      min-height: 140px;
+      background-color: var(--bg-viewer);
+      background-image: radial-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px);
+      background-size: 14px 14px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.18);
+      cursor: zoom-in;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .ct-scan-img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.85);
+    }
+
+    .img-placeholder {
+      width: 100%;
+      max-width: 280px;
+      height: 100%;
+      max-height: 195px;
+      border-radius: 10px;
+      background: radial-gradient(circle at center, #0f172a 0%, #020617 90%);
+      border: 1.5px dashed rgba(56, 189, 248, 0.35);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .img-placeholder-station {
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      letter-spacing: 0.05em;
+    }
+
+    .img-placeholder-file {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      background: rgba(30, 41, 59, 0.8);
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .zoom-badge {
+      position: absolute;
+      bottom: 6px;
+      right: 8px;
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      color: #cbd5e1;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      pointer-events: none;
+    }
+
+    /* Compact Sticky Diagnosis Banner (~32px) */
+    .sticky-diagnosis-bar {
+      flex-shrink: 0;
+      height: 32px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border-subtle);
+      overflow: hidden;
+    }
+
+    .sticky-diagnosis-bar.state-prompt {
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.14), rgba(15, 23, 42, 0.96), rgba(245, 158, 11, 0.14));
+      border-bottom-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .sticky-diagnosis-bar.state-locked {
+      background: linear-gradient(90deg, rgba(22, 163, 74, 0.2), rgba(15, 23, 42, 0.96), rgba(22, 163, 74, 0.2));
+      border-bottom-color: rgba(74, 222, 128, 0.45);
+    }
+
+    .sticky-diag-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sticky-diagnosis-bar.state-prompt .sticky-diag-label {
+      direction: rtl;
+      color: #fcd34d;
+    }
+
+    .sticky-diagnosis-bar.state-locked .sticky-diag-label {
+      direction: ltr;
+      color: #4ade80;
+    }
+
+    /* Middle Question + 4 MCQ Options Area (Fills remaining space, NO overflow) */
+    .mcq-workspace {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 8px 10px 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      overflow: hidden;
+    }
+
+    .question-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .question-text {
+      font-size: clamp(12.5px, 3.4vw, 15px);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.28;
+      text-align: left;
+      direction: ltr;
+    }
+
+    .timeout-tag {
+      flex-shrink: 0;
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #fca5a5;
+      background: rgba(220, 38, 38, 0.22);
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      padding: 2px 7px;
+      border-radius: 6px;
+      direction: rtl;
+      white-space: nowrap;
+    }
+
+    .options-grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      gap: 6px;
+    }
+
+    .option-btn {
+      width: 100%;
+      flex: 1 1 0;
+      min-height: 38px;
+      max-height: 62px;
+      padding: 5px 10px;
+      border-radius: 10px;
+      background-color: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      color: #f1f5f9;
+      font-family: inherit;
+      text-align: left;
+      direction: ltr;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.14s ease, border-color 0.14s ease, transform 0.08s ease;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      background-color: var(--bg-card-hover);
+      border-color: rgba(56, 189, 248, 0.45);
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: scale(0.99);
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+    }
+
+    .opt-key {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: rgba(148, 163, 184, 0.14);
+      color: var(--accent-cyan);
+      font-size: 0.76rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .opt-text {
+      flex: 1;
+      font-size: clamp(11.5px, 3.1vw, 13.5px);
+      font-weight: 600;
+      line-height: 1.24;
+      color: inherit;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .opt-status-icon {
+      font-size: 0.95rem;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    /* Exact Required Correct & Wrong Button Highlights */
+    .option-btn.opt-correct {
+      background-color: var(--correct-bg);
+      border-color: var(--correct-border);
+      color: #ffffff;
+    }
+
+    .option-btn.opt-correct .opt-key {
+      background-color: rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+    }
+
+    .option-btn.opt-wrong {
+      background-color: var(--wrong-bg);
+      border-color: var(--wrong-border);
+      color: #ffffff;
+    }
+
+    .option-btn.opt-wrong .opt-key {
+      background-color: rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+    }
+
+    .option-btn.opt-muted {
+      opacity: 0.58;
+    }
+
+    /* Fixed Bottom Navigation Bar (48px + safe-area-inset-bottom) */
+    .bottom-nav-bar {
+      flex-shrink: 0;
+      min-height: calc(48px + env(safe-area-inset-bottom));
+      padding: 6px 10px calc(6px + env(safe-area-inset-bottom));
+      background-color: #060b16;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 15;
+    }
+
+    .nav-btn {
+      flex: 1 1 50%;
+      height: 36px;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 800;
+      direction: rtl;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: opacity 0.15s ease, transform 0.08s ease;
+    }
+
+    .nav-btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.36;
+      cursor: not-allowed;
+    }
+
+    .nav-btn-prev {
+      background-color: #1e293b;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      color: #e2e8f0;
+    }
+
+    .nav-btn-next {
+      background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      color: #ffffff;
+    }
+
+    .nav-btn-next.is-finish {
+      background: linear-gradient(135deg, #059669 0%, #16a34a 100%);
+      border-color: #4ade80;
+    }
+
+    /* ==========================================================================
+       3. RESULTS SCREEN (SCROLLABLE STATION-BY-STATION REVIEW)
+       ========================================================================== */
+    .results-screen {
+      flex: 1 1 auto;
+      height: 100dvh;
+      overflow-y: auto;
+      padding: 16px 12px calc(24px + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: radial-gradient(circle at top, #111d36 0%, #0b1120 60%, #020617 100%);
+    }
+
+    .score-summary-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-strong);
+      border-radius: 16px;
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+    }
+
+    .score-ring {
+      width: 108px;
+      height: 108px;
+      border-radius: 50%;
+      border: 5px solid var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .score-percent {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .score-fraction {
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      margin-top: 2px;
+    }
+
+    .restart-exam-btn {
+      width: 100%;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 0.96rem;
+      font-weight: 800;
+      direction: rtl;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+
+    .restart-exam-btn:active {
+      transform: scale(0.98);
+    }
+
+    .stations-review-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .review-station-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .review-station-top {
+      background: rgba(6, 11, 22, 0.92);
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .review-thumb-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 8px;
+      background: #020617;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .review-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .review-thumb-fallback {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      text-align: center;
+      line-height: 1.2;
+      padding: 2px;
+    }
+
+    .review-station-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .review-station-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      direction: rtl;
+      display: inline-block;
+    }
+
+    .review-station-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-top: 2px;
+    }
+
+    .review-q-stack {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .review-q-box {
+      padding: 8px 10px;
+      border-radius: 9px;
+      background: rgba(11, 17, 32, 0.78);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .review-q-box.is-diag-q {
+      background: rgba(56, 189, 248, 0.08);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .review-q-prompt {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #f8fafc;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .review-q-row {
+      font-size: 0.78rem;
+      line-height: 1.35;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 5px;
+    }
+
+    .ar-label {
+      direction: rtl;
+      font-weight: 800;
+    }
+
+    .txt-green {
+      color: #4ade80;
+      font-weight: 700;
+    }
+
+    .txt-red {
+      color: #f87171;
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       4. FULLSCREEN LIGHTBOX ZOOM MODAL
+       ========================================================================== */
+    .lightbox-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.97);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      touch-action: pinch-zoom;
+    }
+
+    .lightbox-top {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 102;
+    }
+
+    .lightbox-close {
+      background: #1e293b;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      color: #f8fafc;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .lightbox-body {
+      width: 100%;
+      max-width: 580px;
+      max-height: 82dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox-body img {
+      width: 100%;
+      height: auto;
+      max-height: 80dvh;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+
+    .lightbox-body .img-placeholder {
+      width: 88vw;
+      max-width: 360px;
+      height: 260px;
+      max-height: 260px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- ======================================================================
+         ACTIVE EXAM WORKSPACE (OPENS DIRECTLY INTO QUESTION 1 OF 90)
+         ====================================================================== -->
+    <section id="examScreen" class="exam-screen">
+      <!-- Compact Top Header (~38px) + 60s Countdown Progress Bar -->
+      <header class="top-header">
+        <div class="top-header-row">
+          <div class="hud-group">
+            <span class="hud-pill station-pill" id="stationProgressBadge">صورة 1 / 18</span>
+            <span class="hud-pill" id="questionProgressBadge">سؤال 1 / 90</span>
+          </div>
+          <span class="hud-pill timer-pill" id="timerBadge">⏱ 60s</span>
+        </div>
+        <div class="timer-track">
+          <div class="timer-fill" id="timerProgressBar"></div>
+        </div>
+      </header>
+
+      <!-- Top Image Frame (28dvh, max 230px, min 140px) -->
+      <div class="ct-viewer-zone" id="ctViewerZone" title="Tap to zoom">
+        <div id="imageContainer" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;"></div>
+        <span class="zoom-badge">🔍 Zoom</span>
+      </div>
+
+      <!-- Compact Sticky Diagnosis Banner (~32px) -->
+      <div class="sticky-diagnosis-bar state-prompt" id="stickyDiagnosisBar">
+        <span class="sticky-diag-label" id="stickyDiagLabel">حدد التشخيص الصحيح من الخيارات أدناه</span>
+      </div>
+
+      <!-- Question Text & 4 Exact English MCQ Buttons -->
+      <main class="mcq-workspace">
+        <div class="question-header">
+          <h1 class="question-text" id="questionText">1. Identify the pathology.</h1>
+          <span class="timeout-tag hidden" id="timeoutBadge">انتهى الوقت</span>
+        </div>
+
+        <div class="options-grid" id="optionsGrid"></div>
+      </main>
+
+      <!-- Fixed Bottom Navigation Bar -->
+      <nav class="bottom-nav-bar">
+        <button type="button" class="nav-btn nav-btn-prev" id="prevBtn" disabled>
+          <span>→ السؤال السابق</span>
+        </button>
+        <button type="button" class="nav-btn nav-btn-next" id="nextBtn">
+          <span>السؤال التالي ←</span>
+        </button>
+      </nav>
+    </section>
+
+    <!-- ======================================================================
+         RESULTS SCREEN (SCORE SUMMARY + ALL 18 STATIONS IN ORDER)
+         ====================================================================== -->
+    <section id="resultsScreen" class="results-screen hidden">
+      <div class="score-summary-card">
+        <div class="score-ring">
+          <span class="score-percent" id="finalPercent">0%</span>
+          <span class="score-fraction" id="finalFraction">0 / 90</span>
+        </div>
+        <button type="button" class="restart-exam-btn" id="restartTopBtn">
+          <span>🔄 إعادة الاختبار</span>
+        </button>
+      </div>
+
+      <div class="stations-review-list" id="stationsReviewList"></div>
+
+      <button type="button" class="restart-exam-btn" id="restartBottomBtn">
+        <span>🔄 إعادة الاختبار</span>
+      </button>
+    </section>
+
+    <!-- ======================================================================
+         FULLSCREEN LIGHTBOX ZOOM MODAL
+         ====================================================================== -->
+    <div id="lightboxModal" class="lightbox-modal hidden">
+      <div class="lightbox-top">
+        <span class="hud-pill station-pill" id="lightboxTitle">صورة 1 / 18</span>
+        <button type="button" class="lightbox-close" id="lightboxCloseBtn">إغلاق ✕</button>
+      </div>
+      <div class="lightbox-body" id="lightboxBody"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ========================================================================
+       1. COMPLETE VERBATIM 18-STATION DATASET (90 EXACT MCQs)
+       ======================================================================== */
+    const STATIONS = [
+      {
+        id: 1,
+        image: "images/1.jpg",
+        diagnosis: "Acute intracerebral hemorrhage",
+        questions: [
+          {
+            q: "1. Identify the pathology.",
+            correct: "Acute intracerebral hemorrhage",
+            distractors: [
+              "Acute subdural hematoma",
+              "Acute epidural hematoma",
+              "Acute ischemic stroke"
+            ]
+          },
+          {
+            q: "2. Describe CT findings.",
+            correct: "Hyperdense intraparenchymal hemorrhage with surrounding edema.",
+            distractors: [
+              "Crescent-shaped hyperdense extra-axial collection.",
+              "Biconvex hyperdense extra-axial collection.",
+              "Loss of grey-white differentiation, insular ribbon sign, sulcal effacement and hyperdense MCA."
+            ]
+          },
+          {
+            q: "3. Mention two causes.",
+            correct: "Causes include hypertension and vascular abnormalities.",
+            distractors: [
+              "Usually due to bridging vein injury following trauma.",
+              "Commonly associated with middle meningeal artery injury and temporal bone fracture.",
+              "Causes include osteoporosis, trauma and malignancy."
+            ]
+          },
+          {
+            q: "4. What are the complications?",
+            correct: "Complications include mass effect and intraventricular extension.",
+            distractors: [
+              "May obscure the brainstem and cerebellum.",
+              "Small lesions or thin structures may be obscured or misrepresented.",
+              "Reduced spatial fidelity and image distortion."
+            ]
+          },
+          {
+            q: "5. How is it treated?",
+            correct: "Treatment involves stabilization, blood pressure control and neurosurgical assessment.",
+            distractors: [
+              "Urgent neurosurgical evaluation.",
+              "Eligible patients may undergo thrombolysis or mechanical thrombectomy.",
+              "Management depends on hematoma size, mass effect and neurological status."
+            ]
+          }
+        ]
+      },
+      {
+        id: 2,
+        image: "images/2.jpg",
+        diagnosis: "Acute subdural hematoma",
+        questions: [
+          {
+            q: "1. Identify the pathology.",
+            correct: "Acute subdural hematoma",
+            distractors: [
+              "Acute epidural hematoma",
+              "Acute intracerebral hemorrhage",
+              "Acute ischemic stroke"
+            ]
+          },
+          {
+            q: "2. Describe its shape.",
+            correct: "Crescent-shaped hyperdense extra-axial collection.",
+            distractors: [
+              "Biconvex hyperdense extra-axial collection.",
+              "Hyperdense intraparenchymal hemorrhage with surrounding edema.",
+              "Irregular step-like margins in reconstructed structures."
+            ]
+          },
+          {
+            q: "3. Which vessels are injured?",
+            correct: "Bridging vein injury.",
+            distractors: [
+              "Middle meningeal artery injury.",
+              "Hyperdense MCA.",
+              "Transverse atlantal ligament."
+            ]
+          },
+          {
+            q: "4. What is the mechanism?",
+            correct: "Following trauma.",
+            distractors: [
+              "Caused by axial loading.",
+              "Usually caused by axial compression.",
+              "Classically associated with seat-belt injury."
+            ]
+          },
+          {
+            q: "5. How is it managed?",
+            correct: "Management depends on hematoma size, mass effect and neurological status.",
+            distractors: [
+              "Urgent neurosurgical evaluation.",
+              "Treatment involves stabilization, blood pressure control and neurosurgical assessment.",
+              "Eligible patients may undergo thrombolysis or mechanical thrombectomy."
+            ]
+          }
+        ]
+      },
+      {
+        id: 3,
+        image: "images/3.jpg",
+        diagnosis: "Acute epidural hematoma",
+        questions: [
+          {
+            q: "1. Identify the pathology.",
+            correct: "Acute epidural hematoma",
+            distractors: [
+              "Acute subdural hematoma",
+              "Acute intracerebral hemorrhage",
+              "Beam hardening artifact"
+            ]
+          },
+          {
+            q: "2. Describe its shape.",
+            correct: "Biconvex hyperdense extra-axial collection.",
+            distractors: [
+              "Crescent-shaped hyperdense extra-axial collection.",
+              "Hyperdense intraparenchymal hemorrhage with surrounding edema.",
+              "Concentric circular rings centered around the rotational axis."
+            ]
+          },
+          {
+            q: "3. Which artery is commonly injured?",
+            correct: "Middle meningeal artery injury.",
+            distractors: [
+              "Bridging vein injury.",
+              "Hyperdense MCA.",
+              "Bowel and mesenteric injuries."
+            ]
+          },
+          {
+            q: "4. What associated fracture may occur?",
+            correct: "Temporal bone fracture.",
+            distractors: [
+              "C1 burst fracture involving anterior and posterior arches.",
+              "Odontoid fracture of C2.",
+              "Vertebral height reduction, usually anterior wedging."
+            ]
+          },
+          {
+            q: "5. What is the treatment?",
+            correct: "Urgent neurosurgical evaluation.",
+            distractors: [
+              "Management depends on hematoma size, mass effect and neurological status.",
+              "Eligible patients may undergo thrombolysis or mechanical thrombectomy.",
+              "Treatment includes analgesia, mobilization and selected surgical interventions."
+            ]
+          }
+        ]
+      },
+      {
+        id: 4,
+        image: "images/4.jpg",
+        diagnosis: "Acute ischemic stroke",
+        questions: [
+          {
+            q: "1. Identify the pathology.",
+            correct: "Acute ischemic stroke",
+            distractors: [
+              "Acute intracerebral hemorrhage",
+              "Acute subdural hematoma",
+              "Acute epidural hematoma"
+            ]
+          },
+          {
+            q: "2. What is the hyperdense MCA sign?",
+            correct: "Hyperdense MCA.",
+            distractors: [
+              "Bridging vein injury.",
+              "Middle meningeal artery injury.",
+              "Crescent-shaped hyperdense extra-axial collection."
+            ]
+          },
+          {
+            q: "3. Describe early CT signs.",
+            correct: "Loss of grey-white differentiation, insular ribbon sign, sulcal effacement and hyperdense MCA.",
+            distractors: [
+              "Hyperdense intraparenchymal hemorrhage with surrounding edema.",
+              "Dark streaks in the posterior fossa due to preferential absorption of low-energy photons.",
+              "Bright and dark streaks radiating from metal."
+            ]
+          },
+          {
+            q: "4. Which additional CT study is useful?",
+            correct: "CTA ± CT perfusion.",
+            distractors: [
+              "MRI is more sensitive for marrow edema.",
+              "Coronal and sagittal MPR images.",
+              "CT detector system."
+            ]
+          },
+          {
+            q: "5. What are the treatment options?",
+            correct: "Eligible patients may undergo thrombolysis or mechanical thrombectomy.",
+            distractors: [
+              "Urgent neurosurgical evaluation.",
+              "Treatment involves stabilization, blood pressure control and neurosurgical assessment.",
+              "Treatment may involve immobilization or surgical fixation."
+            ]
+          }
+        ]
+      },
+      {
+        id: 5,
+        image: "images/5.jpg",
+        diagnosis: "Beam hardening artifact",
+        questions: [
+          {
+            q: "1. Identify the artifact.",
+            correct: "Beam hardening artifact",
+            distractors: [
+              "Cupping artifact",
+              "Metallic artifact",
+              "Photon starvation artifact"
+            ]
+          },
+          {
+            q: "2. Where is it commonly seen?",
+            correct: "In the posterior fossa.",
+            distractors: [
+              "Shoulders and pelvis.",
+              "Coronal and sagittal MPR images.",
+              "Chest, abdomen and brain CT."
+            ]
+          },
+          {
+            q: "3. What causes it?",
+            correct: "Preferential absorption of low-energy photons.",
+            distractors: [
+              "Detector element calibration failure or detector malfunction.",
+              "Patient movement or respiratory/cardiac motion.",
+              "Insufficient detected photons after marked X-ray attenuation."
+            ]
+          },
+          {
+            q: "4. How does it affect image interpretation?",
+            correct: "May obscure the brainstem and cerebellum.",
+            distractors: [
+              "Small lesions or thin structures may be obscured or misrepresented.",
+              "Reduced spatial fidelity and image distortion.",
+              "Blurring, ghosting and duplicated anatomical structures."
+            ]
+          },
+          {
+            q: "5. How can it be reduced?",
+            correct: "Reduced by correction algorithms and optimized acquisition parameters.",
+            distractors: [
+              "Detector recalibration and technical servicing.",
+              "Patient instruction and immobilization.",
+              "Thinner slices, smaller voxel dimensions and appropriate reconstruction."
+            ]
+          }
+        ]
+      },
+      {
+        id: 6,
+        image: "images/6.jpg",
+        diagnosis: "Motion Artifact",
+        questions: [
+          {
+            q: "1. Identify the artifact.",
+            correct: "Motion Artifact",
+            distractors: [
+              "Ring Artifact",
+              "Aliasing Artifact",
+              "Stair-Step Artifact"
+            ]
+          },
+          {
+            q: "2. What causes it?",
+            correct: "Patient movement or respiratory/cardiac motion.",
+            distractors: [
+              "Detector element calibration failure or detector malfunction.",
+              "Insufficient spatial sampling of the acquired projection data.",
+              "Inadequate overlapping or discontinuous sampling during helical acquisition."
+            ]
+          },
+          {
+            q: "3. How does it appear?",
+            correct: "Blurring, ghosting and duplicated anatomical structures.",
+            distractors: [
+              "Concentric circular rings centered around the rotational axis.",
+              "Bright and dark streaks radiating from metal.",
+              "Irregular step-like margins in reconstructed structures."
+            ]
+          },
+          {
+            q: "4. Which examinations are particularly affected?",
+            correct: "Chest, abdomen and brain CT.",
+            distractors: [
+              "Shoulders and pelvis.",
+              "Coronal and sagittal MPR images.",
+              "In the posterior fossa."
+            ]
+          },
+          {
+            q: "5. How can it be prevented?",
+            correct: "Patient instruction and immobilization.",
+            distractors: [
+              "Detector recalibration and technical servicing.",
+              "Metal artifact reduction algorithms and appropriate kVp.",
+              "Beam-hardening correction and appropriate reconstruction algorithms."
+            ]
+          }
+        ]
+      },
+      {
+        id: 7,
+        image: "images/7.jpg",
+        diagnosis: "Metallic Artifact",
+        questions: [
+          {
+            q: "1. Identify the artifact.",
+            correct: "Metallic Artifact",
+            distractors: [
+              "Beam hardening artifact",
+              "Photon Starvation Artifact",
+              "Ring Artifact"
+            ]
+          },
+          {
+            q: "2. What are its common sources?",
+            correct: "Dental fillings, surgical clips, prostheses and implants.",
+            distractors: [
+              "Shoulders and pelvis.",
+              "Chest, abdomen and brain CT.",
+              "CT detector system."
+            ]
+          },
+          {
+            q: "3. Why does it occur?",
+            correct: "Beam hardening, photon starvation and related reconstruction effects.",
+            distractors: [
+              "Detector element calibration failure or detector malfunction.",
+              "Patient movement or respiratory/cardiac motion.",
+              "Insufficient spatial sampling of the acquired projection data."
+            ]
+          },
+          {
+            q: "4. How does it appear?",
+            correct: "Bright and dark streaks radiating from metal.",
+            distractors: [
+              "Concentric circular rings centered around the rotational axis.",
+              "Lower CT attenuation values centrally compared with the periphery.",
+              "Prominent streaks and increased image noise."
+            ]
+          },
+          {
+            q: "5. How can it be reduced?",
+            correct: "Metal artifact reduction algorithms and appropriate kVp.",
+            distractors: [
+              "Detector recalibration and technical servicing.",
+              "Patient instruction and immobilization.",
+              "Thin-section acquisition, overlapping reconstructions and appropriate pitch."
+            ]
+          }
+        ]
+      },
+      {
+        id: 8,
+        image: "images/8.jpg",
+        diagnosis: "Ring Artifact",
+        questions: [
+          {
+            q: "1. Identify the artifact.",
+            correct: "Ring Artifact",
+            distractors: [
+              "Cupping Artifact",
+              "Aliasing Artifact",
+              "Motion Artifact"
+            ]
+          },
+          {
+            q: "2. What causes it?",
+            correct: "Detector element calibration failure or detector malfunction.",
+            distractors: [
+              "Preferential absorption of low-energy photons.",
+              "Insufficient detected photons after marked X-ray attenuation.",
+              "Beam hardening within relatively homogeneous objects."
+            ]
+          },
+          {
+            q: "3. Describe its appearance.",
+            correct: "Concentric circular rings centered around the rotational axis.",
+            distractors: [
+              "Bright and dark streaks radiating from metal.",
+              "Irregular step-like margins in reconstructed structures.",
+              "Blurring, ghosting and duplicated anatomical structures."
+            ]
+          },
+          {
+            q: "4. What component is usually responsible?",
+            correct: "CT detector system.",
+            distractors: [
+              "Dental fillings, surgical clips, prostheses and implants.",
+              "Shoulders and pelvis.",
+              "In the posterior fossa."
+            ]
+          },
+          {
+            q: "5. How can it be corrected?",
+            correct: "Detector recalibration and technical servicing.",
+            distractors: [
+              "Appropriate tube current, kVp optimization and iterative reconstruction.",
+              "Thinner slices, smaller voxel dimensions and appropriate reconstruction.",
+              "Adequate sampling frequency."
+            ]
+          }
+        ]
+      },
+      {
+        id: 9,
+        image: "images/9.jpg",
+        diagnosis: "Photon Starvation Artifact",
+        questions: [
+          {
+            q: "1. Identify the artifact.",
+            correct: "Photon Starvation Artifact",
+            distractors: [
+              "Beam hardening artifact",
+              "Partial Volume Artifact",
+              "Metallic Artifact"
+            ]
+          },
+          {
+            q: "2. What causes it?",
+            correct: "Insufficient detected photons after marked X-ray attenuation.",
+            distractors: [
+              "Detector element calibration failure or detector malfunction.",
+              "Insufficient spatial sampling of the acquired projection data.",
+              "Patient movement or respiratory/cardiac motion."
+            ]
+          },
+          {
+            q: "3. In which body regions is it common?",
+            correct: "Shoulders and pelvis.",
+            distractors: [
+              "In the posterior fossa.",
+              "Coronal and sagittal MPR images.",
+              "Chest, abdomen and brain CT."
+            ]
+          },
+          {
+            q: "4. What is its appearance?",
+            correct: "Prominent streaks and increased image noise.",
+            distractors: [
+              "Concentric circular rings centered around the rotational axis.",
+              "Lower CT attenuation values centrally compared with the periphery.",
+              "Irregular step-like margins in reconstructed structures."
+            ]
+          },
+          {
+            q: "5. How can it be reduced?",
+            correct: "Appropriate tube current, kVp optimization and iterative reconstruction.",
+            distractors: [
+              "Detector recalibration and technical servicing.",
+              "Patient instruction and immobilization.",
+              "Adequate sampling frequency."
+            ]
+          }
+        ]
+      },
+      {
+        id: 10,
+        image: "images/10.jpg",
+        diagnosis: "Partial Volume Artifact",
+        questions: [
+          {
+            q: "1. Identify the artifact.",
+            correct: "Partial Volume Artifact",
+            distractors: [
+              "Stair-Step Artifact",
+              "Aliasing Artifact",
+              "Cupping Artifact"
+            ]
+          },
+          {
+            q: "2. Explain its mechanism.",
+            correct: "Different tissue densities within a single voxel are averaged into one CT attenuation value.",
+            distractors: [
+              "Preferential absorption of low-energy photons.",
+              "Inadequate overlapping or discontinuous sampling during helical acquisition.",
+              "Insufficient detected photons after marked X-ray attenuation."
+            ]
+          },
+          {
+            q: "3. How does it affect small structures?",
+            correct: "Small lesions or thin structures may be obscured or misrepresented.",
+            distractors: [
+              "May obscure the brainstem and cerebellum.",
+              "Reduced spatial fidelity and image distortion.",
+              "Prominent streaks and increased image noise."
+            ]
+          },
+          {
+            q: "4. Where is it commonly encountered?",
+            correct: "Different tissue densities within a single voxel.",
+            distractors: [
+              "Shoulders and pelvis.",
+              "In the posterior fossa.",
+              "Coronal and sagittal MPR images."
+            ]
+          },
+          {
+            q: "5. How can it be reduced?",
+            correct: "Thinner slices, smaller voxel dimensions and appropriate reconstruction.",
+            distractors: [
+              "Detector recalibration and technical servicing.",
+              "Patient instruction and immobilization.",
+              "Metal artifact reduction algorithms and appropriate kVp."
+            ]
+          }
+        ]
+      },
+      {
+        id: 11,
+        image: "images/11.jpg",
+        diagnosis: "Stair-Step Artifact",
+        questions: [
+          {
+            q: "1. Identify the artifact.",
+            correct: "Stair-Step Artifact",
+            distractors: [
+              "Aliasing Artifact",
+              "Partial Volume Artifact",
+              "Ring Artifact"
+            ]
+          },
+          {
+            q: "2. What causes it?",
+            correct: "Inadequate overlapping or discontinuous sampling during helical acquisition.",
+            distractors: [
+              "Insufficient spatial sampling of the acquired projection data.",
+              "Detector element calibration failure or detector malfunction.",
+              "Beam hardening within relatively homogeneous objects."
+            ]
+          },
+          {
+            q: "3. In which reconstructions is it prominent?",
+            correct: "Coronal and sagittal MPR images.",
+            distractors: [
+              "Shoulders and pelvis.",
+              "In the posterior fossa.",
+              "Chest, abdomen and brain CT."
+            ]
+          },
+          {
+            q: "4. How does it appear?",
+            correct: "Irregular step-like margins in reconstructed structures.",
+            distractors: [
+              "Concentric circular rings centered around the rotational axis.",
+              "Streaks or distorted fine structures.",
+              "Lower CT attenuation values centrally compared with the periphery."
+            ]
+          },
+          {
+            q: "5. How can it be reduced?",
+            correct: "Thin-section acquisition, overlapping reconstructions and appropriate pitch.",
+            distractors: [
+              "Appropriate tube current, kVp optimization and iterative reconstruction.",
+              "Detector recalibration and technical servicing.",
+              "Beam-hardening correction and appropriate reconstruction algorithms."
+            ]
+          }
+        ]
+      },
+      {
+        id: 12,
+        image: "images/12.jpg",
+        diagnosis: "Aliasing Artifact",
+        questions: [
+          {
+            q: "1. Identify the artifact.",
+            correct: "Aliasing Artifact",
+            distractors: [
+              "Stair-Step Artifact",
+              "Ring Artifact",
+              "Cupping Artifact"
+            ]
+          },
+          {
+            q: "2. What causes it?",
+            correct: "Insufficient spatial sampling of the acquired projection data.",
+            distractors: [
+              "Inadequate overlapping or discontinuous sampling during helical acquisition.",
+              "Detector element calibration failure or detector malfunction.",
+              "Preferential absorption of low-energy photons."
+            ]
+          },
+          {
+            q: "3. What is the relationship with sampling frequency?",
+            correct: "Insufficient spatial sampling of the acquired projection data.",
+            distractors: [
+              "Different tissue densities within a single voxel are averaged into one CT attenuation value.",
+              "Beam hardening within relatively homogeneous objects.",
+              "Patient movement or respiratory/cardiac motion."
+            ]
+          },
+          {
+            q: "4. How does it affect image quality?",
+            correct: "Reduced spatial fidelity and image distortion.",
+            distractors: [
+              "May obscure the brainstem and cerebellum.",
+              "Small lesions or thin structures may be obscured or misrepresented.",
+              "Prominent streaks and increased image noise."
+            ]
+          },
+          {
+            q: "5. How can it be reduced?",
+            correct: "Adequate sampling frequency.",
+            distractors: [
+              "Detector recalibration and technical servicing.",
+              "Patient instruction and immobilization.",
+              "Thinner slices, smaller voxel dimensions and appropriate reconstruction."
+            ]
+          }
+        ]
+      },
+      {
+        id: 13,
+        image: "images/13.jpg",
+        diagnosis: "Cupping Artifact",
+        questions: [
+          {
+            q: "1. Identify the artifact.",
+            correct: "Cupping Artifact",
+            distractors: [
+              "Beam hardening artifact",
+              "Ring Artifact",
+              "Partial Volume Artifact"
+            ]
+          },
+          {
+            q: "2. What causes it?",
+            correct: "Beam hardening within relatively homogeneous objects.",
+            distractors: [
+              "Detector element calibration failure or detector malfunction.",
+              "Insufficient spatial sampling of the acquired projection data.",
+              "Patient movement or respiratory/cardiac motion."
+            ]
+          },
+          {
+            q: "3. Describe its appearance.",
+            correct: "Lower CT attenuation values centrally compared with the periphery.",
+            distractors: [
+              "Concentric circular rings centered around the rotational axis.",
+              "Bright and dark streaks radiating from metal.",
+              "Irregular step-like margins in reconstructed structures."
+            ]
+          },
+          {
+            q: "4. Which physical phenomenon is responsible?",
+            correct: "Preferential absorption of lower-energy photons.",
+            distractors: [
+              "Insufficient detected photons after marked X-ray attenuation.",
+              "Inadequate overlapping or discontinuous sampling during helical acquisition.",
+              "Different tissue densities within a single voxel are averaged into one CT attenuation value."
+            ]
+          },
+          {
+            q: "5. How can it be corrected?",
+            correct: "Beam-hardening correction and appropriate reconstruction algorithms.",
+            distractors: [
+              "Detector recalibration and technical servicing.",
+              "Patient instruction and immobilization.",
+              "Adequate sampling frequency."
+            ]
+          }
+        ]
+      },
+      {
+        id: 14,
+        image: "images/14.jpg",
+        diagnosis: "Jefferson fracture (C1)",
+        questions: [
+          {
+            q: "1. Identify the fractured vertebra.",
+            correct: "Jefferson fracture (C1)",
+            distractors: [
+              "Odontoid fracture (C2)",
+              "Thoracolumbar burst fracture",
+              "Chance fracture"
+            ]
+          },
+          {
+            q: "2. Name the fracture type.",
+            correct: "C1 burst fracture involving anterior and posterior arches.",
+            distractors: [
+              "Horizontal flexion-distraction fracture involving vertebral body and posterior elements.",
+              "Vertebral body comminution, posterior wall disruption and possible retropulsion into the spinal canal.",
+              "Vertebral height reduction, usually anterior wedging."
+            ]
+          },
+          {
+            q: "3. What is the mechanism?",
+            correct: "Caused by axial loading.",
+            distractors: [
+              "Classically associated with seat-belt injury.",
+              "Usually caused by axial compression.",
+              "Following trauma."
+            ]
+          },
+          {
+            q: "4. Which ligament is important for stability?",
+            correct: "Transverse atlantal ligament.",
+            distractors: [
+              "Bridging vein injury.",
+              "Middle meningeal artery injury.",
+              "Bowel and mesenteric injuries."
+            ]
+          },
+          {
+            q: "5. How is it treated?",
+            correct: "Treatment depends on stability and ligament integrity.",
+            distractors: [
+              "Treatment depends on stability and neurological status.",
+              "Unstable injuries often require fixation.",
+              "Treatment may involve immobilization or surgical fixation."
+            ]
+          }
+        ]
+      },
+      {
+        id: 15,
+        image: "images/15.jpg",
+        diagnosis: "Odontoid fracture (C2)",
+        questions: [
+          {
+            q: "1. Identify the pathology.",
+            correct: "Odontoid fracture (C2)",
+            distractors: [
+              "Jefferson fracture (C1)",
+              "Chance fracture",
+              "Vertebral compression fracture"
+            ]
+          },
+          {
+            q: "2. Which vertebra is involved?",
+            correct: "Odontoid fracture of C2.",
+            distractors: [
+              "C1 burst fracture involving anterior and posterior arches.",
+              "Vertebral body comminution, posterior wall disruption and possible retropulsion into the spinal canal.",
+              "Vertebral height reduction, usually anterior wedging."
+            ]
+          },
+          {
+            q: "3. Classify the fracture.",
+            correct: "Type I: tip; Type II: base; Type III: extends into C2 body.",
+            distractors: [
+              "C1 burst fracture involving anterior and posterior arches.",
+              "Horizontal flexion-distraction fracture involving vertebral body and posterior elements.",
+              "Vertebral height reduction, usually anterior wedging."
+            ]
+          },
+          {
+            q: "4. What are the common causes?",
+            correct: "Trauma.",
+            distractors: [
+              "Osteoporosis, trauma and malignancy.",
+              "Seat-belt injury.",
+              "Axial compression."
+            ]
+          },
+          {
+            q: "5. What are the treatment options?",
+            correct: "Treatment may involve immobilization or surgical fixation.",
+            distractors: [
+              "Treatment depends on stability and ligament integrity.",
+              "Unstable injuries often require fixation.",
+              "Treatment includes analgesia, mobilization and selected surgical interventions."
+            ]
+          }
+        ]
+      },
+      {
+        id: 16,
+        image: "images/16.jpg",
+        diagnosis: "Thoracolumbar burst fracture",
+        questions: [
+          {
+            q: "1. Identify the pathology.",
+            correct: "Thoracolumbar burst fracture",
+            distractors: [
+              "Vertebral compression fracture",
+              "Chance fracture",
+              "Jefferson fracture (C1)"
+            ]
+          },
+          {
+            q: "2. Describe the CT findings.",
+            correct: "Vertebral body comminution, posterior wall disruption and possible retropulsion into the spinal canal.",
+            distractors: [
+              "Vertebral height reduction, usually anterior wedging.",
+              "Horizontal flexion-distraction fracture involving vertebral body and posterior elements.",
+              "C1 burst fracture involving anterior and posterior arches."
+            ]
+          },
+          {
+            q: "3. What is the mechanism?",
+            correct: "Usually caused by axial compression.",
+            distractors: [
+              "Classically associated with seat-belt injury.",
+              "Caused by axial loading.",
+              "Following trauma."
+            ]
+          },
+          {
+            q: "4. What is the significance of retropulsion?",
+            correct: "Possible retropulsion into the spinal canal.",
+            distractors: [
+              "Bowel and mesenteric injuries.",
+              "Transverse atlantal ligament.",
+              "Complications include mass effect and intraventricular extension."
+            ]
+          },
+          {
+            q: "5. How is it treated?",
+            correct: "Treatment depends on stability and neurological status.",
+            distractors: [
+              "Treatment depends on stability and ligament integrity.",
+              "Unstable injuries often require fixation.",
+              "Treatment includes analgesia, mobilization and selected surgical interventions."
+            ]
+          }
+        ]
+      },
+      {
+        id: 17,
+        image: "images/17.jpg",
+        diagnosis: "Chance fracture",
+        questions: [
+          {
+            q: "1. Identify the fracture.",
+            correct: "Chance fracture",
+            distractors: [
+              "Thoracolumbar burst fracture",
+              "Vertebral compression fracture",
+              "Odontoid fracture (C2)"
+            ]
+          },
+          {
+            q: "2. Describe its orientation.",
+            correct: "Horizontal flexion-distraction fracture involving vertebral body and posterior elements.",
+            distractors: [
+              "Vertebral body comminution, posterior wall disruption and possible retropulsion into the spinal canal.",
+              "Vertebral height reduction, usually anterior wedging.",
+              "C1 burst fracture involving anterior and posterior arches."
+            ]
+          },
+          {
+            q: "3. What is the mechanism?",
+            correct: "Classically associated with seat-belt injury.",
+            distractors: [
+              "Usually caused by axial compression.",
+              "Caused by axial loading.",
+              "Following trauma."
+            ]
+          },
+          {
+            q: "4. Which abdominal injuries are associated?",
+            correct: "Bowel and mesenteric injuries.",
+            distractors: [
+              "Transverse atlantal ligament.",
+              "Bridging vein injury.",
+              "Middle meningeal artery injury."
+            ]
+          },
+          {
+            q: "5. How is it treated?",
+            correct: "Unstable injuries often require fixation.",
+            distractors: [
+              "Treatment depends on stability and neurological status.",
+              "Treatment depends on stability and ligament integrity.",
+              "Treatment includes analgesia, mobilization and selected surgical interventions."
+            ]
+          }
+        ]
+      },
+      {
+        id: 18,
+        image: "images/18.jpg",
+        diagnosis: "Vertebral compression fracture",
+        questions: [
+          {
+            q: "1. Identify the abnormality.",
+            correct: "Vertebral compression fracture",
+            distractors: [
+              "Thoracolumbar burst fracture",
+              "Chance fracture",
+              "Jefferson fracture (C1)"
+            ]
+          },
+          {
+            q: "2. Describe vertebral morphology.",
+            correct: "Vertebral height reduction, usually anterior wedging.",
+            distractors: [
+              "Vertebral body comminution, posterior wall disruption and possible retropulsion into the spinal canal.",
+              "Horizontal flexion-distraction fracture involving vertebral body and posterior elements.",
+              "C1 burst fracture involving anterior and posterior arches."
+            ]
+          },
+          {
+            q: "3. What are the causes?",
+            correct: "Causes include osteoporosis, trauma and malignancy.",
+            distractors: [
+              "Causes include hypertension and vascular abnormalities.",
+              "Classically associated with seat-belt injury.",
+              "Usually caused by axial compression."
+            ]
+          },
+          {
+            q: "4. How can acute and chronic fractures be differentiated?",
+            correct: "MRI is more sensitive for marrow edema.",
+            distractors: [
+              "CTA ± CT perfusion.",
+              "Coronal and sagittal MPR images.",
+              "CT detector system."
+            ]
+          },
+          {
+            q: "5. What are the treatment options?",
+            correct: "Treatment includes analgesia, mobilization and selected surgical interventions.",
+            distractors: [
+              "Treatment depends on stability and neurological status.",
+              "Unstable injuries often require fixation.",
+              "Treatment may involve immobilization or surgical fixation."
+            ]
+          }
+        ]
+      }
+    ];
+
+    /* ========================================================================
+       2. FLATTENED 90-QUESTION INDEX & STATE MANAGEMENT
+       ======================================================================== */
+    const TOTAL_STATIONS = STATIONS.length; // 18
+    const QUESTIONS_PER_STATION = 5;
+    const TOTAL_QUESTIONS = TOTAL_STATIONS * QUESTIONS_PER_STATION; // 90
+    const QUESTION_DURATION_SEC = 60;
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    const state = {
+      currentGlobalIndex: 0, // 0 .. 89
+      records: [],           // 90 question records
+      countdownInterval: null,
+      revealTimeout: null,
+      pendingRevealGlobalIndex: null
+    };
+
+    /* ========================================================================
+       3. DOM REFERENCES
+       ======================================================================== */
+    const examScreen = document.getElementById("examScreen");
+    const resultsScreen = document.getElementById("resultsScreen");
+
+    const stationProgressBadge = document.getElementById("stationProgressBadge");
+    const questionProgressBadge = document.getElementById("questionProgressBadge");
+    const timerBadge = document.getElementById("timerBadge");
+    const timerProgressBar = document.getElementById("timerProgressBar");
+
+    const ctViewerZone = document.getElementById("ctViewerZone");
+    const imageContainer = document.getElementById("imageContainer");
+
+    const stickyDiagnosisBar = document.getElementById("stickyDiagnosisBar");
+    const stickyDiagLabel = document.getElementById("stickyDiagLabel");
+
+    const questionText = document.getElementById("questionText");
+    const timeoutBadge = document.getElementById("timeoutBadge");
+    const optionsGrid = document.getElementById("optionsGrid");
+
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    const lightboxModal = document.getElementById("lightboxModal");
+    const lightboxTitle = document.getElementById("lightboxTitle");
+    const lightboxBody = document.getElementById("lightboxBody");
+    const lightboxCloseBtn = document.getElementById("lightboxCloseBtn");
+
+    /* ========================================================================
+       4. INITIALIZATION & TIMER / REVEAL CLEANUP HELPERS
+       ======================================================================== */
+    function initExam() {
+      stopCountdown();
+      finalizePendingReveal();
+
+      state.currentGlobalIndex = 0;
+      state.records = [];
+
+      STATIONS.forEach((station, sIdx) => {
+        station.questions.forEach((qObj, qIdx) => {
+          const shuffledOptions = shuffleArray([
+            { text: qObj.correct, isCorrect: true },
+            ...qObj.distractors.map((d) => ({ text: d, isCorrect: false }))
+          ]);
+
+          state.records.push({
+            stationIdx: sIdx,
+            questionIdx: qIdx,
+            options: shuffledOptions,
+            status: "unanswered", // 'unanswered' | 'correct' | 'wrong' | 'timeout'
+            selectedOptionIdx: null,
+            revealed: false,
+            remainingSeconds: QUESTION_DURATION_SEC
+          });
+        });
+      });
+
+      resultsScreen.classList.add("hidden");
+      examScreen.classList.remove("hidden");
+      renderCurrentQuestion();
+    }
+
+    function stopCountdown() {
+      if (state.countdownInterval !== null) {
+        clearInterval(state.countdownInterval);
+        state.countdownInterval = null;
+      }
+    }
+
+    function finalizePendingReveal() {
+      if (state.revealTimeout !== null) {
+        clearTimeout(state.revealTimeout);
+        state.revealTimeout = null;
+      }
+      if (state.pendingRevealGlobalIndex !== null) {
+        const rec = state.records[state.pendingRevealGlobalIndex];
+        if (rec) {
+          rec.revealed = true;
+        }
+        state.pendingRevealGlobalIndex = null;
+      }
+    }
+
+    /* ========================================================================
+       5. IMAGE RENDERING WITH CLEAN FALLBACK PLACEHOLDER
+       ======================================================================== */
+    function renderStationImage(container, station, isThumbnail = false) {
+      container.innerHTML = "";
+      const img = document.createElement("img");
+      img.src = station.image;
+      img.alt = `Station ${station.id}`;
+      if (!isThumbnail) {
+        img.className = "ct-scan-img";
+      }
+
+      img.onerror = () => {
+        if (isThumbnail) {
+          container.innerHTML = `<div class="review-thumb-fallback">ST ${station.id}<br/>${station.image}</div>`;
+        } else {
+          container.innerHTML = `
+            <div class="img-placeholder">
+              <div class="img-placeholder-station">Station ${station.id}</div>
+              <div class="img-placeholder-file">${station.image}</div>
+            </div>
+          `;
+        }
+      };
+
+      container.appendChild(img);
+    }
+
+    /* ========================================================================
+       6. TIMER UI & 60-SECOND COUNTDOWN ENGINE
+       ======================================================================== */
+    function updateTimerUI(seconds) {
+      timerBadge.textContent = `⏱ ${seconds}s`;
+      const pct = Math.max(0, Math.min(100, (seconds / QUESTION_DURATION_SEC) * 100));
+      timerProgressBar.style.width = `${pct}%`;
+
+      timerBadge.classList.remove("timer-warn", "timer-danger");
+      timerProgressBar.classList.remove("timer-warn", "timer-danger");
+
+      if (seconds <= 10) {
+        timerBadge.classList.add("timer-danger");
+        timerProgressBar.classList.add("timer-danger");
+      } else if (seconds <= 20) {
+        timerBadge.classList.add("timer-warn");
+        timerProgressBar.classList.add("timer-warn");
+      }
+    }
+
+    function startCountdownForCurrentQuestion() {
+      stopCountdown();
+      const idx = state.currentGlobalIndex;
+      const rec = state.records[idx];
+
+      updateTimerUI(rec.remainingSeconds);
+
+      if (rec.status !== "unanswered") {
+        return;
+      }
+
+      state.countdownInterval = setInterval(() => {
+        if (state.currentGlobalIndex !== idx || rec.status !== "unanswered") {
+          stopCountdown();
+          return;
+        }
+
+        rec.remainingSeconds -= 1;
+        if (rec.remainingSeconds <= 0) {
+          rec.remainingSeconds = 0;
+          updateTimerUI(0);
+          stopCountdown();
+          handleQuestionTimeout(idx);
+        } else {
+          updateTimerUI(rec.remainingSeconds);
+        }
+      }, 1000);
+    }
+
+    function handleQuestionTimeout(globalIdx) {
+      const rec = state.records[globalIdx];
+      if (!rec || rec.status !== "unanswered") return;
+
+      rec.status = "timeout";
+      rec.revealed = true;
+
+      // Auto-advance to next question or open Results screen if on Question 90
+      if (globalIdx < TOTAL_QUESTIONS - 1) {
+        state.currentGlobalIndex = globalIdx + 1;
+        renderCurrentQuestion();
+      } else {
+        showResultsScreen();
+      }
+    }
+
+    /* ========================================================================
+       7. STICKY DIAGNOSIS BANNER & QUESTION RENDERING
+       ======================================================================== */
+    function updateStickyDiagnosisBanner(station, stationIdx, questionIdx) {
+      const diagRecord = state.records[stationIdx * QUESTIONS_PER_STATION];
+      const isDiagResolved = diagRecord.status !== "unanswered";
+
+      if (questionIdx === 0 && !isDiagResolved) {
+        stickyDiagnosisBar.className = "sticky-diagnosis-bar state-prompt";
+        stickyDiagLabel.textContent = "حدد التشخيص الصحيح من الخيارات أدناه";
+      } else if (isDiagResolved) {
+        stickyDiagnosisBar.className = "sticky-diagnosis-bar state-locked";
+        stickyDiagLabel.textContent = `✓ ${station.diagnosis}`;
+      } else {
+        stickyDiagnosisBar.className = "sticky-diagnosis-bar state-prompt";
+        stickyDiagLabel.textContent = "حدد التشخيص الصحيح من الخيارات أدناه";
+      }
+    }
+
+    function renderCurrentQuestion() {
+      const idx = state.currentGlobalIndex;
+      const rec = state.records[idx];
+      const station = STATIONS[rec.stationIdx];
+      const qObj = station.questions[rec.questionIdx];
+
+      // Update top bar counters
+      stationProgressBadge.textContent = `صورة ${rec.stationIdx + 1} / ${TOTAL_STATIONS}`;
+      questionProgressBadge.textContent = `سؤال ${idx + 1} / ${TOTAL_QUESTIONS}`;
+
+      // Render CT image for current station
+      renderStationImage(imageContainer, station, false);
+
+      // Update sticky diagnosis banner
+      updateStickyDiagnosisBanner(station, rec.stationIdx, rec.questionIdx);
+
+      // Update question prompt and timeout indicator
+      questionText.textContent = qObj.q;
+      if (rec.status === "timeout") {
+        timeoutBadge.classList.remove("hidden");
+      } else {
+        timeoutBadge.classList.add("hidden");
+      }
+
+      // Render 4 exact English MCQ option buttons
+      const letters = ["A", "B", "C", "D"];
+      const isLocked = rec.status !== "unanswered";
+      optionsGrid.innerHTML = "";
+
+      rec.options.forEach((opt, optIdx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-btn";
+        btn.disabled = isLocked;
+
+        let iconChar = "";
+
+        if (isLocked) {
+          if (opt.isCorrect && rec.revealed) {
+            btn.classList.add("opt-correct");
+            iconChar = "✓";
+          } else if (optIdx === rec.selectedOptionIdx && !opt.isCorrect) {
+            btn.classList.add("opt-wrong");
+            iconChar = "✕";
+          } else {
+            btn.classList.add("opt-muted");
+          }
+        }
+
+        btn.innerHTML = `
+          <span class="opt-key">${letters[optIdx]}</span>
+          <span class="opt-text">${opt.text}</span>
+          <span class="opt-status-icon">${iconChar}</span>
+        `;
+
+        if (!isLocked) {
+          btn.addEventListener("click", () => handleOptionClick(optIdx));
+        }
+
+        optionsGrid.appendChild(btn);
+      });
+
+      // Update bottom navigation buttons
+      prevBtn.disabled = idx === 0;
+      if (idx === TOTAL_QUESTIONS - 1) {
+        nextBtn.classList.add("is-finish");
+        nextBtn.innerHTML = `<span>عرض النتيجة النهائية ✓</span>`;
+      } else {
+        nextBtn.classList.remove("is-finish");
+        nextBtn.innerHTML = `<span>السؤال التالي ←</span>`;
+      }
+
+      // Start or display 60-second timer
+      startCountdownForCurrentQuestion();
+    }
+
+    /* ========================================================================
+       8. ANSWER CLICK HANDLER (IMMEDIATE GREEN/RED + 3s DELAY ON WRONG)
+       ======================================================================== */
+    function handleOptionClick(selectedOptIdx) {
+      const idx = state.currentGlobalIndex;
+      const rec = state.records[idx];
+      if (rec.status !== "unanswered") return;
+
+      // Immediately stop the 60-second timer
+      stopCountdown();
+
+      const chosenOpt = rec.options[selectedOptIdx];
+      rec.selectedOptionIdx = selectedOptIdx;
+
+      const station = STATIONS[rec.stationIdx];
+      const buttons = optionsGrid.querySelectorAll(".option-btn");
+
+      if (chosenOpt.isCorrect) {
+        rec.status = "correct";
+        rec.revealed = true;
+
+        buttons.forEach((btn, i) => {
+          btn.disabled = true;
+          const icon = btn.querySelector(".opt-status-icon");
+          if (i === selectedOptIdx) {
+            btn.classList.add("opt-correct");
+            icon.textContent = "✓";
+          } else {
+            btn.classList.add("opt-muted");
+          }
+        });
+      } else {
+        rec.status = "wrong";
+        rec.revealed = false;
+        state.pendingRevealGlobalIndex = idx;
+
+        buttons.forEach((btn, i) => {
+          btn.disabled = true;
+          const icon = btn.querySelector(".opt-status-icon");
+          if (i === selectedOptIdx) {
+            btn.classList.add("opt-wrong");
+            icon.textContent = "✕";
+          } else {
+            btn.classList.add("opt-muted");
+          }
+        });
+
+        // Reveal correct answer in bright green after 3000ms
+        state.revealTimeout = setTimeout(() => {
+          rec.revealed = true;
+          state.revealTimeout = null;
+          state.pendingRevealGlobalIndex = null;
+
+          if (state.currentGlobalIndex === idx) {
+            const currentBtns = optionsGrid.querySelectorAll(".option-btn");
+            rec.options.forEach((opt, i) => {
+              if (opt.isCorrect && currentBtns[i]) {
+                currentBtns[i].classList.remove("opt-muted");
+                currentBtns[i].classList.add("opt-correct");
+                currentBtns[i].querySelector(".opt-status-icon").textContent = "✓";
+              }
+            });
+          }
+        }, 3000);
+      }
+
+      // Immediately lock diagnosis banner if Question 1 of the station was answered
+      updateStickyDiagnosisBanner(station, rec.stationIdx, rec.questionIdx);
+    }
+
+    /* ========================================================================
+       9. BOTTOM NAVIGATION BAR HANDLERS
+       ======================================================================== */
+    prevBtn.addEventListener("click", () => {
+      if (state.currentGlobalIndex <= 0) return;
+      stopCountdown();
+      finalizePendingReveal();
+      state.currentGlobalIndex -= 1;
+      renderCurrentQuestion();
+    });
+
+    nextBtn.addEventListener("click", () => {
+      stopCountdown();
+      finalizePendingReveal();
+
+      if (state.currentGlobalIndex < TOTAL_QUESTIONS - 1) {
+        state.currentGlobalIndex += 1;
+        renderCurrentQuestion();
+      } else {
+        showResultsScreen();
+      }
+    });
+
+    /* ========================================================================
+       10. FULLSCREEN LIGHTBOX ZOOM MODAL
+       ======================================================================== */
+    ctViewerZone.addEventListener("click", () => {
+      const rec = state.records[state.currentGlobalIndex];
+      const station = STATIONS[rec.stationIdx];
+      lightboxTitle.textContent = `صورة ${station.id} / ${TOTAL_STATIONS}`;
+      lightboxBody.innerHTML = imageContainer.innerHTML;
+      lightboxModal.classList.remove("hidden");
+    });
+
+    lightboxCloseBtn.addEventListener("click", () => {
+      lightboxModal.classList.add("hidden");
+    });
+
+    lightboxModal.addEventListener("click", (e) => {
+      if (e.target === lightboxModal || e.target === lightboxBody) {
+        lightboxModal.classList.add("hidden");
+      }
+    });
+
+    /* ========================================================================
+       11. RESULTS SCREEN (FINAL SCORE + ALL 18 STATIONS IN ORDER)
+       ======================================================================== */
+    function showResultsScreen() {
+      stopCountdown();
+      finalizePendingReveal();
+
+      examScreen.classList.add("hidden");
+      resultsScreen.classList.remove("hidden");
+      resultsScreen.scrollTop = 0;
+
+      const totalCorrect = state.records.filter((r) => r.status === "correct").length;
+      const pct = Math.round((totalCorrect / TOTAL_QUESTIONS) * 100);
+
+      document.getElementById("finalPercent").textContent = `${pct}%`;
+      document.getElementById("finalFraction").textContent = `${totalCorrect} / ${TOTAL_QUESTIONS}`;
+
+      const reviewList = document.getElementById("stationsReviewList");
+      reviewList.innerHTML = "";
+
+      STATIONS.forEach((station, sIdx) => {
+        const card = document.createElement("article");
+        card.className = "review-station-card";
+
+        // Station Top Header with Thumbnail & Diagnosis
+        const topRow = document.createElement("div");
+        topRow.className = "review-station-top";
+
+        const thumbWrap = document.createElement("div");
+        thumbWrap.className = "review-thumb-wrap";
+        renderStationImage(thumbWrap, station, true);
+
+        const infoDiv = document.createElement("div");
+        infoDiv.className = "review-station-info";
+        infoDiv.innerHTML = `
+          <span class="review-station-badge">صورة ${station.id} / ${TOTAL_STATIONS}</span>
+          <div class="review-station-title">${station.diagnosis}</div>
+        `;
+
+        topRow.appendChild(thumbWrap);
+        topRow.appendChild(infoDiv);
+        card.appendChild(topRow);
+
+        // Station 5 MCQs in exact order: Q1 (Diagnosis) first, then Q2..Q5
+        const qStack = document.createElement("div");
+        qStack.className = "review-q-stack";
+
+        station.questions.forEach((qObj, qIdx) => {
+          const rec = state.records[sIdx * QUESTIONS_PER_STATION + qIdx];
+          const qBox = document.createElement("div");
+          qBox.className = qIdx === 0 ? "review-q-box is-diag-q" : "review-q-box";
+
+          let userAnswerText = "لم تتم الإجابة";
+          let userAnswerClass = "txt-red";
+
+          if (rec.status === "correct") {
+            userAnswerText = rec.options[rec.selectedOptionIdx].text;
+            userAnswerClass = "txt-green";
+          } else if (rec.status === "wrong") {
+            userAnswerText = rec.options[rec.selectedOptionIdx].text;
+            userAnswerClass = "txt-red";
+          } else if (rec.status === "timeout") {
+            userAnswerText = "انتهى الوقت (لم تتم الإجابة)";
+            userAnswerClass = "txt-red";
+          }
+
+          qBox.innerHTML = `
+            <div class="review-q-prompt">${qObj.q}</div>
+            <div class="review-q-row">
+              <span class="ar-label ${userAnswerClass}">إجابتك:</span>
+              <span class="${userAnswerClass}">${userAnswerText}</span>
+            </div>
+            <div class="review-q-row">
+              <span class="ar-label txt-green">الإجابة الصحيحة:</span>
+              <span class="txt-green">${qObj.correct}</span>
+            </div>
+          `;
+
+          qStack.appendChild(qBox);
+        });
+
+        card.appendChild(qStack);
+        reviewList.appendChild(card);
+      });
+    }
+
+    document.getElementById("restartTopBtn").addEventListener("click", initExam);
+    document.getElementById("restartBottomBtn").addEventListener("click", initExam);
+
+    // Boot directly into Question 1 of 90
+    window.addEventListener("DOMContentLoaded", initExam);
+  </script>
+</body>
+</html>
